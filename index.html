@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador CFDI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --radius: 0.65rem;
+            --background: oklch(1 0 0);
+            --foreground: oklch(0.141 0.005 285.823);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.141 0.005 285.823);
+            --popover: oklch(1 0 0);
+            --popover-foreground: oklch(0.141 0.005 285.823);
+            --primary: oklch(0.645 0.246 16.439);
+            --primary-foreground: oklch(0.969 0.015 12.422);
+            --secondary: oklch(0.967 0.001 286.375);
+            --secondary-foreground: oklch(0.21 0.006 285.885);
+            --muted: oklch(0.967 0.001 286.375);
+            --muted-foreground: oklch(0.552 0.016 285.938);
+            --accent: oklch(0.967 0.001 286.375);
+            --accent-foreground: oklch(0.21 0.006 285.885);
+            --destructive: oklch(0.577 0.245 27.325);
+            --border: oklch(0.92 0.004 286.32);
+            --input: oklch(0.92 0.004 286.32);
+            --ring: oklch(0.645 0.246 16.439);
+            --chart-1: oklch(0.646 0.222 41.116);
+            --chart-2: oklch(0.6 0.118 184.704);
+            --chart-3: oklch(0.398 0.07 227.392);
+            --chart-4: oklch(0.828 0.189 84.429);
+            --chart-5: oklch(0.769 0.188 70.08);
+            --sidebar: oklch(0.985 0 0);
+            --sidebar-foreground: oklch(0.141 0.005 285.823);
+            --sidebar-primary: oklch(0.645 0.246 16.439);
+            --sidebar-primary-foreground: oklch(0.969 0.015 12.422);
+            --sidebar-accent: oklch(0.967 0.001 286.375);
+            --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+            --sidebar-border: oklch(0.92 0.004 286.32);
+            --sidebar-ring: oklch(0.645 0.246 16.439);
+        }
+
+        .dark {
+            --background: oklch(0.141 0.005 285.823);
+            --foreground: oklch(0.985 0 0);
+            --card: oklch(0.21 0.006 285.885);
+            --card-foreground: oklch(0.985 0 0);
+            --popover: oklch(0.21 0.006 285.885);
+            --popover-foreground: oklch(0.985 0 0);
+            --primary: oklch(0.645 0.246 16.439);
+            --primary-foreground: oklch(0.969 0.015 12.422);
+            --secondary: oklch(0.274 0.006 286.033);
+            --secondary-foreground: oklch(0.985 0 0);
+            --muted: oklch(0.274 0.006 286.033);
+            --muted-foreground: oklch(0.705 0.015 286.067);
+            --accent: oklch(0.274 0.006 286.033);
+            --accent-foreground: oklch(0.985 0 0);
+            --destructive: oklch(0.704 0.191 22.216);
+            --border: oklch(1 0 0 / 10%);
+            --input: oklch(1 0 0 / 15%);
+            --ring: oklch(0.645 0.246 16.439);
+            --chart-1: oklch(0.488 0.243 264.376);
+            --chart-2: oklch(0.696 0.17 162.48);
+            --chart-3: oklch(0.769 0.188 70.08);
+            --chart-4: oklch(0.627 0.265 303.9);
+            --chart-5: oklch(0.645 0.246 16.439);
+            --sidebar: oklch(0.21 0.006 285.885);
+            --sidebar-foreground: oklch(0.985 0 0);
+            --sidebar-primary: oklch(0.645 0.246 16.439);
+            --sidebar-primary-foreground: oklch(0.969 0.015 12.422);
+            --sidebar-accent: oklch(0.274 0.006 286.033);
+            --sidebar-accent-foreground: oklch(0.985 0 0);
+            --sidebar-border: oklch(1 0 0 / 10%);
+            --sidebar-ring: oklch(0.645 0.246 16.439);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        body.dark {
+            background: var(--background);
+            color: var(--foreground);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--foreground);
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            color: var(--muted-foreground);
+            font-size: 1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--card-foreground);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .card form {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card form .btn {
+            margin-top: auto;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--foreground);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--background) !important;
+            border: 1px solid var(--input);
+            border-radius: calc(var(--radius) - 2px);
+            color: var(--foreground);
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+            height: 40px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--foreground);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+            background: var(--background) !important;
+        }
+
+        .form-group input:focus::selection {
+            background: var(--foreground);
+            color: var(--background);
+        }
+
+        .form-group input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 30px var(--background) inset !important;
+            -webkit-text-fill-color: var(--foreground) !important;
+        }
+
+        .form-group input::placeholder {
+            color: var(--muted-foreground);
+        }
+
+        .btn {
+            background: var(--foreground);
+            color: var(--background);
+            border: none;
+            padding: 8px 16px;
+            border-radius: calc(var(--radius) - 2px);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+        }
+
+        .btn:hover {
+            background: var(--foreground);
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            background: var(--muted);
+            color: var(--muted-foreground);
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--accent-foreground);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--background);
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--foreground);
+            background: var(--accent);
+        }
+
+        .drop-zone h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--foreground);
+            font-weight: 500;
+        }
+
+        .drop-zone p {
+            color: var(--muted-foreground);
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+        }
+
+        .drop-zone-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: var(--muted-foreground);
+        }
+
+        .file-list {
+            margin-top: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .file-list::-webkit-scrollbar-track {
+            background: var(--muted);
+            border-radius: 3px;
+        }
+
+        .file-list::-webkit-scrollbar-thumb {
+            background: var(--muted-foreground);
+            border-radius: 3px;
+        }
+
+        .file-list::-webkit-scrollbar-thumb:hover {
+            background: var(--foreground);
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--background);
+            border-radius: calc(var(--radius) - 2px);
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .file-name {
+            color: var(--foreground);
+            font-size: 0.875rem;
+        }
+
+        .file-remove {
+            color: var(--destructive);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            border-radius: calc(var(--radius) - 4px);
+            transition: background-color 0.2s ease;
+        }
+
+        .file-remove:hover {
+            background: var(--destructive);
+            color: var(--destructive-foreground);
+        }
+
+        .results-section {
+            margin-top: 48px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .results-header h2 {
+            font-size: 1.5rem;
+            color: var(--foreground);
+            font-weight: 600;
+        }
+
+        .export-btn {
+            background: var(--foreground);
+            color: var(--background);
+            border: none;
+            padding: 8px 16px;
+            border-radius: calc(var(--radius) - 2px);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-btn:hover {
+            background: var(--foreground);
+            opacity: 0.9;
+        }
+
+        .export-btn:disabled {
+            background: var(--muted);
+            color: var(--muted-foreground);
+            cursor: not-allowed;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .results-table th {
+            background: var(--muted);
+            color: var(--muted-foreground);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .results-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--card-foreground);
+            font-size: 0.875rem;
+        }
+
+        .results-table tr:hover {
+            background: var(--accent);
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-valid {
+            color: var(--chart-2);
+            font-weight: 500;
+        }
+
+        .status-invalid {
+            color: var(--destructive);
+            font-weight: 500;
+        }
+
+        .loader {
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--foreground);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 24px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: calc(var(--radius) - 2px);
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            backdrop-filter: blur(8px);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            backdrop-filter: blur(8px);
+        }
+
+        .footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--foreground);
+            margin-bottom: 4px;
+        }
+
+        .footer-subtitle {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .header h1 {
+                font-size: 1.875rem;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            
+            .export-btn {
+                align-self: stretch;
+            }
+
+            .footer-title {
+                font-size: 0.8rem;
+            }
+
+            .footer-subtitle {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="container">
+        <div class="header">
+            <h1>Validador CFDI</h1>
+            <p>Validación de Comprobantes Fiscales Digitales por Internet</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Validación Manual</h2>
+                <form id="manualForm">
+                    <div class="form-group">
+                        <label for="re">RFC Emisor:</label>
+                        <input type="text" id="re" name="re" placeholder="Ej: EEC081222FH8" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rr">RFC Receptor:</label>
+                        <input type="text" id="rr" name="rr" placeholder="Ej: XAXX010101000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tt">Total:</label>
+                        <input type="text" id="tt" name="tt" placeholder="Ej: 4182" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id">UUID:</label>
+                        <input type="text" id="id" name="id" placeholder="Ej: 06632F3-EF6B-4B19-AD7E-6DB4B3BE7EDB" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">Validar CFDI</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Validación por Archivos</h2>
+                <div style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-icon">
+                            <i class="far fa-folder"></i>
+                        </div>
+                        <h3>Arrastra y suelta archivos XML</h3>
+                        <p>o haz clic para seleccionar archivos</p>
+                        <input type="file" id="xmlFiles" accept=".xml" multiple style="display: none;">
+                    </div>
+                    
+                    <div id="fileList" class="file-list hidden"></div>
+                    
+                    <button id="validateFilesBtn" class="btn hidden" style="margin-top: auto;">
+                        Validar Archivos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="alertContainer"></div>
+        
+        <div id="loadingContainer" class="hidden">
+            <div class="loader"></div>
+        </div>
+
+        <div id="resultsSection" class="results-section hidden">
+            <div class="results-header">
+                <h2>Resultados de Validación</h2>
+                <button id="exportBtn" class="export-btn">Exportar a CSV</button>
+            </div>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Archivo/Origen</th>
+                        <th>Estado</th>
+                        <th>RFC Emisor</th>
+                        <th>RFC Receptor</th>
+                        <th>Total</th>
+                        <th>UUID</th>
+                        <th>Código Estatus</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <div class="footer-title">CFDI Validation Engine • Batch & Individual Processing</div>
+            <div class="footer-subtitle">Luis Felipe Fernández Gurrola • Escotel • 2025</div>
+        </div>
+    </div>
+
+    <script>
+        let validationResults = [];
+        let selectedFiles = [];
+
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const xmlFiles = document.getElementById('xmlFiles');
+        const fileList = document.getElementById('fileList');
+        const validateFilesBtn = document.getElementById('validateFilesBtn');
+        const manualForm = document.getElementById('manualForm');
+        const alertContainer = document.getElementById('alertContainer');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsBody = document.getElementById('resultsBody');
+        const exportBtn = document.getElementById('exportBtn');
+
+        // Drag and drop functionality
+        dropZone.addEventListener('click', () => xmlFiles.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(Array.from(e.dataTransfer.files));
+        });
+
+        xmlFiles.addEventListener('change', (e) => {
+            handleFiles(Array.from(e.target.files));
+        });
+
+        function handleFiles(files) {
+            const xmlFiles = files.filter(file => file.name.endsWith('.xml'));
+            selectedFiles = xmlFiles;
+            displayFileList();
+            
+            if (xmlFiles.length > 0) {
+                validateFilesBtn.classList.remove('hidden');
+            }
+        }
+
+        function displayFileList() {
+            if (selectedFiles.length === 0) {
+                fileList.classList.add('hidden');
+                return;
+            }
+
+            fileList.classList.remove('hidden');
+            fileList.innerHTML = selectedFiles.map((file, index) => `
+                <div class="file-item">
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-remove" onclick="removeFile(${index})">×</span>
+                </div>
+            `).join('');
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displayFileList();
+            
+            if (selectedFiles.length === 0) {
+                validateFilesBtn.classList.add('hidden');
+            }
+        }
+
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        function showLoading() {
+            loadingContainer.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+        }
+
+        function hideLoading() {
+            loadingContainer.classList.add('hidden');
+        }
+
+        async function validateCfdi(re, rr, tt, id) {
+            const url = `https://factura123.mx/apisat/validarCadena/re=${re}&rr=${rr}&tt=${tt}&id=${id}`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Error en la solicitud: ' + response.status);
+                }
+                
+                const data = await response.json();
+                const isValid = data.Estado === 'Vigente' || data.success || data.valido === true;
+                
+                return {
+                    valid: isValid,
+                    data: data,
+                    re: re,
+                    rr: rr,
+                    tt: tt,
+                    id: id
+                };
+            } catch (error) {
+                return {
+                    valid: false,
+                    error: error.message,
+                    re: re,
+                    rr: rr,
+                    tt: tt,
+                    id: id
+                };
+            }
+        }
+
+        async function parseXmlFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const xmlContent = e.target.result;
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+                        
+                        const comprobante = xmlDoc.querySelector('Comprobante');
+                        const emisor = xmlDoc.querySelector('Emisor');
+                        const receptor = xmlDoc.querySelector('Receptor');
+                        const timbreFiscal = xmlDoc.querySelector('TimbreFiscalDigital');
+                        
+                        if (!comprobante || !emisor || !receptor || !timbreFiscal) {
+                            throw new Error('XML no válido o incompleto');
+                        }
+
+                        resolve({
+                            re: emisor.getAttribute('Rfc'),
+                            rr: receptor.getAttribute('Rfc'),
+                            tt: parseFloat(comprobante.getAttribute('Total')).toFixed(0),
+                            id: timbreFiscal.getAttribute('UUID')
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        function displayResults() {
+            resultsBody.innerHTML = '';
+            
+            validationResults.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result.fileName || 'Validación Manual'}</td>
+                    <td class="${result.valid ? 'status-valid' : 'status-invalid'}">
+                        ${result.valid ? 'Válido' : 'No válido'}
+                    </td>
+                    <td>${result.re || 'N/A'}</td>
+                    <td>${result.rr || 'N/A'}</td>
+                    <td>${result.tt || 'N/A'}</td>
+                    <td>${result.id || 'N/A'}</td>
+                    <td>${result.data?.CodigoEstatus || result.error || 'N/A'}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+            
+            resultsSection.classList.remove('hidden');
+        }
+
+        // Manual form submission
+        manualForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const re = document.getElementById('re').value.trim();
+            const rr = document.getElementById('rr').value.trim();
+            const tt = document.getElementById('tt').value.trim();
+            const id = document.getElementById('id').value.trim();
+            
+            if (!re || !rr || !tt || !id) {
+                showAlert('Por favor complete todos los campos', 'error');
+                return;
+            }
+            
+            showLoading();
+            
+            const result = await validateCfdi(re, rr, tt, id);
+            validationResults = [result];
+            
+            hideLoading();
+            displayResults();
+            
+            if (result.valid) {
+                showAlert('CFDI validado correctamente', 'success');
+            } else {
+                showAlert('Error en la validación: ' + (result.data?.CodigoEstatus || result.error), 'error');
+            }
+        });
+
+        // File validation
+        validateFilesBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) {
+                showAlert('Por favor seleccione archivos XML', 'error');
+                return;
+            }
+            
+            showLoading();
+            validationResults = [];
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                try {
+                    const xmlData = await parseXmlFile(file);
+                    const result = await validateCfdi(xmlData.re, xmlData.rr, xmlData.tt, xmlData.id);
+                    result.fileName = file.name;
+                    validationResults.push(result);
+                } catch (error) {
+                    validationResults.push({
+                        fileName: file.name,
+                        valid: false,
+                        error: error.message
+                    });
+                }
+            }
+            
+            hideLoading();
+            displayResults();
+            
+            const validCount = validationResults.filter(r => r.valid).length;
+            const totalCount = validationResults.length;
+            
+            if (validCount === totalCount) {
+                showAlert(`Todos los ${totalCount} archivos son válidos`, 'success');
+            } else {
+                showAlert(`${validCount} de ${totalCount} archivos son válidos`, 'error');
+            }
+        });
+
+        // CSV Export
+        exportBtn.addEventListener('click', () => {
+            if (validationResults.length === 0) {
+                showAlert('No hay resultados para exportar', 'error');
+                return;
+            }
+            
+            const csvContent = [
+                ['Archivo/Origen', 'Estado', 'RFC Emisor', 'RFC Receptor', 'Total', 'UUID', 'Código Estatus'],
+                ...validationResults.map(result => [
+                    result.fileName || 'Validación Manual',
+                    result.valid ? 'Válido' : 'No válido',
+                    result.re || 'N/A',
+                    result.rr || 'N/A',
+                    result.tt || 'N/A',
+                    result.id || 'N/A',
+                    result.data?.CodigoEstatus || result.error || 'N/A'
+                ])
+            ].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+
+            // Agregar BOM para UTF-8
+            const BOM = '\uFEFF';
+            const csvWithBOM = BOM + csvContent;
+            
+            const blob = new Blob([csvWithBOM], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'validacion_cfdi.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('Archivo CSV exportado correctamente', 'success');
+        });
+    </script>
+</body>
+</html>
