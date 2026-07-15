@@ -602,7 +602,7 @@
 
         <div class="footer">
             <div class="footer-title">CFDI Validation Engine • Batch & Individual Processing</div>
-            <div class="footer-subtitle">Luis Felipe Fernández Gurrola • Escotel • 2025</div>
+            <div class="footer-subtitle">Luis Felipe Fernández Gurrola • Escotel • 2026</div>
         </div>
     </div>
 
@@ -739,10 +739,17 @@
                         const parser = new DOMParser();
                         const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
                         
-                        const comprobante = xmlDoc.querySelector('Comprobante');
-                        const emisor = xmlDoc.querySelector('Emisor');
-                        const receptor = xmlDoc.querySelector('Receptor');
-                        const timbreFiscal = xmlDoc.querySelector('TimbreFiscalDigital');
+                        if (xmlDoc.querySelector('parsererror')) {
+                            throw new Error('El archivo no contiene XML válido');
+                        }
+
+                        // Los CFDI usan prefijos (cfdi:, tfd:); localName funciona con cualquier prefijo.
+                        const findElement = (name) => Array.from(xmlDoc.getElementsByTagName('*'))
+                            .find(element => element.localName === name);
+                        const comprobante = findElement('Comprobante');
+                        const emisor = findElement('Emisor');
+                        const receptor = findElement('Receptor');
+                        const timbreFiscal = findElement('TimbreFiscalDigital');
                         
                         if (!comprobante || !emisor || !receptor || !timbreFiscal) {
                             throw new Error('XML no válido o incompleto');
@@ -751,7 +758,7 @@
                         resolve({
                             re: emisor.getAttribute('Rfc'),
                             rr: receptor.getAttribute('Rfc'),
-                            tt: parseFloat(comprobante.getAttribute('Total')).toFixed(0),
+                            tt: comprobante.getAttribute('Total'),
                             id: timbreFiscal.getAttribute('UUID')
                         });
                     } catch (error) {
