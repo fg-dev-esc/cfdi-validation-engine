@@ -119,7 +119,7 @@
 
         .header::before {
             content: 'CFDI / VALIDATION SYSTEM';
-            grid-column: 1 / -1;
+            grid-column: 1;
             color: var(--muted-foreground);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.6875rem;
@@ -142,6 +142,32 @@
             line-height: 1.55;
             max-width: 260px;
             text-align: right;
+        }
+
+        .project-links {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .project-links a {
+            align-items: center;
+            color: var(--muted-foreground);
+            display: inline-flex;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            gap: 6px;
+            letter-spacing: 0.08em;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.2s ease;
+        }
+
+        .project-links a:hover {
+            color: var(--foreground);
         }
 
         .api-notice {
@@ -620,6 +646,10 @@
 <body class="dark">
     <div class="container">
         <div class="header">
+            <nav class="project-links" aria-label="Otros proyectos">
+                <a href="https://ghost-bank-miner.vercel.app/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt" aria-hidden="true"></i>Ghost Bank Miner</a>
+                <a href="https://context-providers.vercel.app/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt" aria-hidden="true"></i>Context Providers</a>
+            </nav>
             <h1>Validador CFDI</h1>
             <p>Validación de Comprobantes Fiscales Digitales por Internet</p>
         </div>
