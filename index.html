@@ -79,10 +79,13 @@
             --sidebar-ring: oklch(0.645 0.246 16.439);
         }
 
-        * {
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            border-radius: 0 !important;
         }
 
         body {
